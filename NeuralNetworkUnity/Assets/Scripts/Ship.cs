@@ -28,4 +28,14 @@ public class Ship : MonoBehaviour
         
         //Call neural network
     }
+
+    private void Move(float speed)
+    {
+        rigidbody.velocity = transform.forward * speed;
+    }
+
+    private void Rotate(float speed)
+    {
+        transform.Rotate(new Vector3(0, 1, 0) * Time.deltaTime * speed, Space.World);
+    }
 }
