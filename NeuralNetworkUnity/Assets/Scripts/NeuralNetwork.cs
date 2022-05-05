@@ -7,7 +7,10 @@ public class NeuralNetwork
     private float[][] neurons;
     private float[][][] weights;
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="layers"></param>
     public NeuralNetwork(int[] layers)
     {
         this.layers = new int[layers.Length];
@@ -23,7 +26,7 @@ public class NeuralNetwork
     /// <summary>
     /// Copy the network
     /// </summary>
-    /// <param name="copyNetwork"></param>
+    /// <param name="copyNetwork">Base network</param>
     public NeuralNetwork(NeuralNetwork copyNetwork)
     {
         this.layers = new int[copyNetwork.layers.Length];
@@ -36,6 +39,10 @@ public class NeuralNetwork
         CopyWeights(copyNetwork.weights);
     }
 
+    /// <summary>
+    /// Copy the weights
+    /// </summary>
+    /// <param name="copyWeights">Base weights</param>
     private void CopyWeights(float[][][] copyWeights)
     {
         for (int i = 0; i < weights.Length; i++)
