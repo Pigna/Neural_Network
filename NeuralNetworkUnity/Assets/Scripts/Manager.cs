@@ -13,6 +13,8 @@ public class Manager : MonoBehaviour
     {
         MaxPopulation = 10;
         SimulationTime = 15;
+
+        CreateShips();
     }
 
     // Update is called once per frame
@@ -25,9 +27,21 @@ public class Manager : MonoBehaviour
         //Mutate
 
     }
-
     void CreateShips()
     {
+        for (int i = 0; i < MaxPopulation; i++)
+        {
+            //Instantiate gameobject on random location
+            //Add to ships list
+        }
+    }
 
+    void RecreateShips(List<GameObject> ships)
+    {
+        //Foreach remaining ship
+        foreach(GameObject ship in ships)
+        {
+            //Get ship, copy and mutate untill population is filled.
+        }
     }
 }
