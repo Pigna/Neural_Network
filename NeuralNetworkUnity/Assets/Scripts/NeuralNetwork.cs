@@ -110,9 +110,8 @@ public class NeuralNetwork
         {
             neurons[0][i] = inputs[i];
         }
-
         //Iterate over the neurons and compute feedforward
-        for (int i = 0; i < layers.Length; i++)
+        for (int i = 1; i < layers.Length; i++)
         {
             for (int j = 0; j < neurons[i].Length; j++)
             {
