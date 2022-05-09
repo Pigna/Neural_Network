@@ -7,6 +7,9 @@ public class Manager : MonoBehaviour
 
     public int MaxPopulation = 10;
     public int SimulationTime = 15;
+    public GameObject prefab;
+
+    List<GameObject> Ships = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -21,7 +24,7 @@ public class Manager : MonoBehaviour
     void Update()
     {
         //Create ships
-        CreateShips();
+        //CreateShips();
 
         //Filter best ones
         //Mutate
@@ -31,8 +34,17 @@ public class Manager : MonoBehaviour
     {
         for (int i = 0; i < MaxPopulation; i++)
         {
-            //Instantiate gameobject on random location
-            //Add to ships list
+            //Generate a random coordinate
+            Vector3 position = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), Random.Range(-10, 10));
+
+            //Generate a random rotational axis
+            Quaternion rotation = Quaternion.Euler(new Vector3(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360)));
+
+            //Instantiate gameobject on random location with random direction
+            GameObject ship = Instantiate(prefab, position, rotation);
+
+            //Add to ships
+            Ships.Add(ship);
         }
     }
 
