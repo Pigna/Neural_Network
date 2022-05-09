@@ -8,8 +8,7 @@ public class Ship : MonoBehaviour
 
     public NeuralNetwork neuralNetwork;
     public GameObject Target;
-
-    private float q = 0.0f;
+    public Vector3 OldPos;
 
     // Start is called before the first frame update
     void Start()
@@ -21,7 +20,7 @@ public class Ship : MonoBehaviour
         //The value of a layer will determain the number of neurons
         //The first number is the amount of input
         //The last number is the amount of output
-        neuralNetwork = new NeuralNetwork(new int[] { 4, 2, 4 });
+        neuralNetwork = new NeuralNetwork(new int[] { 8, 8, 6, 4 });
 
         //Output
         //Movement -> Forward | Positive  -> Backwards | Negative
@@ -33,9 +32,11 @@ public class Ship : MonoBehaviour
         //Input
         //Distance to target - Float
         //Direction to target - XYZ
-        //
         //DirectionSelf - XYZ
         //Current speed?
+
+        //Set old location, needed to calculate speed
+        OldPos = transform.position;
 
     }
 
@@ -48,8 +49,16 @@ public class Ship : MonoBehaviour
         //Get distance to objective area
         float dist = DistanceToObjective();
 
+        //Get current movement speed
+        float speed = Speed();
+
         //List the Input
-        float[] input = new float[] { dist, dir.x, dir.y, dir.z };
+        float[] input = new float[] {
+            dist,
+            dir.x, dir.y, dir.z,
+            transform.forward.x, transform.forward.y, transform.forward.z,
+            speed
+        };
 
         //Call neural network with input
         float[] networkReturn = neuralNetwork.FeedForward(input);//Input
@@ -59,6 +68,7 @@ public class Ship : MonoBehaviour
         Rotate(networkReturn[1], networkReturn[2], networkReturn[3]);
     }
 
+    //Fixed update
     void FixedUpdate()
     {
         //Displays a line of the forward direction
@@ -105,5 +115,16 @@ public class Ship : MonoBehaviour
     private float DistanceToObjective()
     {
         return Vector3.Distance(this.transform.position, Target.transform.position);
+    }
+
+    /// <summary>
+    /// Get the current speed of the ship
+    /// </summary>
+    /// <returns>Float speed</returns>
+    private float Speed()
+    {
+        var speed = Vector3.Distance(OldPos, transform.position);
+        OldPos = transform.position;
+        return speed;
     }
 }
