@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ship : MonoBehaviour
+public class Ship : MonoBehaviour, IComparable<Ship>
 {
     Rigidbody rigidbody;
 
@@ -52,12 +53,15 @@ public class Ship : MonoBehaviour
         //Get current movement speed
         float speed = Speed();
 
-        Debug.Log(Identification + " -> " +
-            "Dist: " + dist +
-            "Dir:" + dir.x + " " + dir.y + " " + dir.z +
-            "pos:" + transform.position +
-            "Speed:" + speed
-             );
+        if (Identification == 1)
+        {
+            Debug.Log(Identification + " -> " +
+                "Dist: " + dist +
+                "Dir:" + dir.x + " " + dir.y + " " + dir.z +
+                "pos:" + transform.position +
+                "Speed:" + speed
+                 );
+        }
 
         //List the Input
         float[] input = new float[] {
@@ -69,7 +73,17 @@ public class Ship : MonoBehaviour
 
         //Call neural network with input
         float[] networkReturn = neuralNetwork.FeedForward(input);//Input
-        
+
+        if (Identification == 1)
+        {
+            Debug.Log(Identification + " Out -> " +
+            "Move: " + networkReturn[0] +
+            "X:" + networkReturn[1] +
+            "Y:" + networkReturn[2] +
+            "Z:" + networkReturn[3]
+            );
+        }
+
         //Use network output for actions
         Move(networkReturn[0]);
         Rotate(networkReturn[1], networkReturn[2], networkReturn[3]);
@@ -119,7 +133,7 @@ public class Ship : MonoBehaviour
     /// Get the distance to the objective
     /// </summary>
     /// <returns>Float objective distance</returns>
-    private float DistanceToObjective()
+    public float DistanceToObjective()
     {
         return Vector3.Distance(this.transform.position, Target.transform.position);
     }
@@ -134,5 +148,10 @@ public class Ship : MonoBehaviour
 
         OldPos = transform.position;
         return speed;
+    }
+
+    public int CompareTo(Ship other)
+    {
+        return DistanceToObjective().CompareTo(other.DistanceToObjective());
     }
 }

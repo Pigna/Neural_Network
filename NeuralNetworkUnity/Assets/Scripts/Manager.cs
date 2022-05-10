@@ -7,7 +7,7 @@ public class Manager : MonoBehaviour
 
     public int MaxPopulation = 10;
     public int SimulationTime = 15;
-    public GameObject prefab;
+    public GameObject Prefab;
 
     List<GameObject> Ships = new List<GameObject>();
 
@@ -18,6 +18,8 @@ public class Manager : MonoBehaviour
         SimulationTime = 15;
 
         CreateShips();
+
+        StartCoroutine("Mutate");
     }
 
     // Update is called once per frame
@@ -41,7 +43,7 @@ public class Manager : MonoBehaviour
             Quaternion rotation = Quaternion.Euler(new Vector3(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360)));
 
             //Instantiate gameobject on random location with random direction
-            GameObject ship = Instantiate(prefab, position, rotation);
+            GameObject ship = Instantiate(Prefab, position, rotation);
 
             //Add to ships
             Ships.Add(ship);
@@ -55,6 +57,27 @@ public class Manager : MonoBehaviour
         foreach(GameObject ship in ships)
         {
             //Get ship, copy and mutate untill population is filled.
+        }
+    }
+
+    void DistanceShips()
+    {
+        Ships.Sort();
+
+        Debug.Log("Results:");
+        foreach (GameObject ship in Ships)
+        {
+            Debug.Log(ship.GetComponent<Ship>().Identification + ": " + ship.GetComponent<Ship>().DistanceToObjective());
+        }
+    }
+
+    IEnumerator Mutate()
+    {
+        for (; ; )
+        {
+            DistanceShips();
+            // execute block of code here
+            yield return new WaitForSeconds(1.0f);
         }
     }
 }
