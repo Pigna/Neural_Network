@@ -45,6 +45,7 @@ public class Manager : MonoBehaviour
 
             //Add to ships
             Ships.Add(ship);
+            ship.GetComponent<Ship>().Identification = i;
         }
     }
 

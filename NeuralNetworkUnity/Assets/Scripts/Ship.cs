@@ -9,6 +9,7 @@ public class Ship : MonoBehaviour
     public NeuralNetwork neuralNetwork;
     public GameObject Target;
     public Vector3 OldPos;
+    public int Identification;
 
     // Start is called before the first frame update
     void Start()
@@ -37,7 +38,6 @@ public class Ship : MonoBehaviour
 
         //Set old location, needed to calculate speed
         OldPos = transform.position;
-
     }
 
     // Update is called once per frame
@@ -51,6 +51,13 @@ public class Ship : MonoBehaviour
 
         //Get current movement speed
         float speed = Speed();
+
+        Debug.Log(Identification + " -> " +
+            "Dist: " + dist +
+            "Dir:" + dir.x + " " + dir.y + " " + dir.z +
+            "pos:" + transform.position +
+            "Speed:" + speed
+             );
 
         //List the Input
         float[] input = new float[] {
@@ -124,6 +131,7 @@ public class Ship : MonoBehaviour
     private float Speed()
     {
         var speed = Vector3.Distance(OldPos, transform.position);
+
         OldPos = transform.position;
         return speed;
     }
