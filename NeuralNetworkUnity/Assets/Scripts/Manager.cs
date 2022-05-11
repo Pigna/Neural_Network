@@ -6,7 +6,12 @@ public class Manager : MonoBehaviour
 {
 
     public int MaxPopulation = 10;
-    public int SimulationTime = 15;
+    
+    private int CurrentGen = 0;
+
+    public float SimulationTime = 15.0f;
+    private float ActionTime = 0.0f;
+
     public GameObject Prefab;
 
     List<GameObject> Ships = new List<GameObject>();
@@ -15,69 +20,92 @@ public class Manager : MonoBehaviour
     void Start()
     {
         MaxPopulation = 10;
-        SimulationTime = 15;
+        SimulationTime = 15f;
 
         CreateShips();
-
-        StartCoroutine("Mutate");
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Create ships
-        //CreateShips();
-
-        //Filter best ones
-        //Mutate
-
+        //Every 15 sec filter the best performing and recreate
+        if (Time.time > ActionTime)
+        {
+            ActionTime = Time.time + SimulationTime;
+            FitnessTest();
+        }
     }
     void CreateShips()
     {
         for (int i = 0; i < MaxPopulation; i++)
         {
-            //Generate a random coordinate
-            Vector3 position = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), Random.Range(-10, 10));
-
-            //Generate a random rotational axis
-            Quaternion rotation = Quaternion.Euler(new Vector3(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360)));
-
             //Instantiate gameobject on random location with random direction
-            GameObject ship = Instantiate(Prefab, position, rotation);
+            GameObject ship = InstantiateShip();
 
             //Add to ships
             Ships.Add(ship);
+
             ship.GetComponent<Ship>().Identification = i;
         }
     }
 
-    void RecreateShips(List<GameObject> ships)
+    void RecreateShips(List<Ship> ships)
     {
-        //Foreach remaining ship
-        foreach(GameObject ship in ships)
+        List<GameObject> newGen = new List<GameObject>();
+        
+        //Foreach fittest ship
+        foreach(Ship ship in ships)
         {
             //Get ship, copy and mutate untill population is filled.
+            Ship newShip = new Ship(ship.neuralNetwork);
+
+            GameObject _newObj = InstantiateShip();
+
+            newGen.Add(_newObj);
         }
+        //Clean-up existing gen
+        ClearExistingGen();
+
+        //Set new gen
+        Ships = newGen;
     }
 
-    void DistanceShips()
+    void FitnessTest()
     {
-        Ships.Sort();
-
-        Debug.Log("Results:");
-        foreach (GameObject ship in Ships)
+        //Get ship component for all ships
+        List<Ship> _ships = new List<Ship>();
+        foreach (GameObject gameObject in Ships)
         {
-            Debug.Log(ship.GetComponent<Ship>().Identification + ": " + ship.GetComponent<Ship>().DistanceToObjective());
+            _ships.Add(gameObject.GetComponent<Ship>());
         }
+        //Sort ships on distance to objective
+        _ships.Sort();
+        
+        //Get 50% best performing ships
+        List<Ship> fittest = _ships.GetRange(0, MaxPopulation / 2);
+
+        //Recreate 
+        RecreateShips(fittest);
     }
 
-    IEnumerator Mutate()
+    void ClearExistingGen()
     {
-        for (; ; )
+        foreach (GameObject gameObject in Ships)
         {
-            DistanceShips();
-            // execute block of code here
-            yield return new WaitForSeconds(1.0f);
+            Destroy(gameObject);
         }
+        Ships.Clear();
+    }
+
+    GameObject InstantiateShip()
+    {
+        //Generate a random coordinate
+        Vector3 position = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), Random.Range(-10, 10));
+
+        //Generate a random rotational axis
+        Quaternion rotation = Quaternion.Euler(new Vector3(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360)));
+
+        //Instantiate gameobject on random location with random direction
+        return Instantiate(Prefab, position, rotation);
     }
 }

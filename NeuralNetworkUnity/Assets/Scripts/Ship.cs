@@ -17,13 +17,6 @@ public class Ship : MonoBehaviour, IComparable<Ship>
     {
         rigidbody = GetComponent<Rigidbody>();
 
-        //Setup neural network
-        //The amount of ints will determain the number of layers
-        //The value of a layer will determain the number of neurons
-        //The first number is the amount of input
-        //The last number is the amount of output
-        neuralNetwork = new NeuralNetwork(new int[] { 8, 8, 6, 4 });
-
         //Output
         //Movement -> Forward | Positive  -> Backwards | Negative
         //RotationX -> Turn left | Positive -> Turn right | Negative
@@ -100,6 +93,29 @@ public class Ship : MonoBehaviour, IComparable<Ship>
     }
 
     /// <summary>
+    /// Constructor
+    /// </summary>
+    public Ship()
+    {
+        //Setup neural network
+        //The amount of ints will determain the number of layers
+        //The value of a layer will determain the number of neurons
+        //The first number is the amount of input
+        //The last number is the amount of output
+        neuralNetwork = new NeuralNetwork(new int[] { 8, 8, 6, 4 });
+    }
+
+    /// <summary>
+    /// Setup a ship with existing network and mutate
+    /// </summary>
+    /// <param name="neuralNetwork">NeuralNetwork, Existing NeuralNetwork</param>
+    public Ship(NeuralNetwork neuralNetwork)
+    {
+        this.neuralNetwork = new NeuralNetwork(neuralNetwork);
+        this.neuralNetwork.Mutate();
+    }
+
+    /// <summary>
     /// Forward (Positive) and backward(Negative) movement of the ship
     /// </summary>
     /// <param name="speed">Float input</param>
@@ -117,7 +133,7 @@ public class Ship : MonoBehaviour, IComparable<Ship>
     /// <param name="z">Float, Z axis</param>
     private void Rotate(float x, float y, float z)
     {
-        transform.Rotate(new Vector3(x, y, z) * Time.deltaTime, Space.World);
+        transform.Rotate(new Vector3(x, y, z) * Time.deltaTime * 25, Space.World);
     }
 
     /// <summary>
