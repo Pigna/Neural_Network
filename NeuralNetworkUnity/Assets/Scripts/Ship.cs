@@ -8,14 +8,22 @@ public class Ship : MonoBehaviour, IComparable<Ship>
     Rigidbody rigidbody;
 
     public NeuralNetwork neuralNetwork;
-    public GameObject Target;
-    public Vector3 OldPos;
-    public int Identification;
+    public GameObject target;
+    public Vector3 oldPos;
+    public int identification;
+
+    private Renderer rederer;
+
+    public Gradient gradient;
+
+    private float minDistanceToTarget = 100f;
+    public int timesTargetAchieved = 0;
 
     // Start is called before the first frame update
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
+        rederer = GetComponent<Renderer>();
 
         //Output
         //Movement -> Forward | Positive  -> Backwards | Negative
@@ -31,7 +39,7 @@ public class Ship : MonoBehaviour, IComparable<Ship>
         //Current speed?
 
         //Set old location, needed to calculate speed
-        OldPos = transform.position;
+        oldPos = transform.position;
     }
 
     // Update is called once per frame
@@ -42,18 +50,19 @@ public class Ship : MonoBehaviour, IComparable<Ship>
 
         //Get distance to objective area
         float dist = DistanceToObjective();
+        UpdateColor(dist);
 
         //Get current movement speed
         float speed = Speed();
 
-        if (Identification == 1)
+        if (identification == 1)
         {
-            Debug.Log(Identification + " -> " +
+/*            Debug.Log(identification + " -> " +
                 "Dist: " + dist +
                 "Dir:" + dir.x + " " + dir.y + " " + dir.z +
                 "pos:" + transform.position +
                 "Speed:" + speed
-                 );
+                 );*/
         }
 
         //List the Input
@@ -67,14 +76,14 @@ public class Ship : MonoBehaviour, IComparable<Ship>
         //Call neural network with input
         float[] networkReturn = neuralNetwork.FeedForward(input);//Input
 
-        if (Identification == 1)
+        if (identification == 1)
         {
-            Debug.Log(Identification + " Out -> " +
+/*            Debug.Log(identification + " Out -> " +
             "Move: " + networkReturn[0] +
             "X:" + networkReturn[1] +
             "Y:" + networkReturn[2] +
             "Z:" + networkReturn[3]
-            );
+            );*/
         }
 
         //Use network output for actions
@@ -121,7 +130,7 @@ public class Ship : MonoBehaviour, IComparable<Ship>
     /// <param name="speed">Float input</param>
     private void Move(float speed)
     {
-        rigidbody.velocity = transform.forward * speed;
+        rigidbody.velocity = transform.forward * (speed+2f);
     }
 
     /// <summary>
@@ -142,7 +151,7 @@ public class Ship : MonoBehaviour, IComparable<Ship>
     /// <returns>Vector3 objective direction</returns>
     private Vector3 DirectionToObjective()
     {
-        return Vector3.Normalize(this.transform.position - Target.transform.position);
+        return Vector3.Normalize(this.transform.position - target.transform.position);
     }
 
     /// <summary>
@@ -151,7 +160,13 @@ public class Ship : MonoBehaviour, IComparable<Ship>
     /// <returns>Float objective distance</returns>
     public float DistanceToObjective()
     {
-        return Vector3.Distance(this.transform.position, Target.transform.position);
+        float _distance = Vector3.Distance(this.transform.position, target.transform.position);
+
+        //Set minimum achieved distance to objective
+        if (_distance < minDistanceToTarget)
+            minDistanceToTarget = _distance;
+
+        return _distance;
     }
 
     /// <summary>
@@ -160,14 +175,37 @@ public class Ship : MonoBehaviour, IComparable<Ship>
     /// <returns>Float speed</returns>
     private float Speed()
     {
-        var speed = Vector3.Distance(OldPos, transform.position);
+        var speed = Vector3.Distance(oldPos, transform.position);
 
-        OldPos = transform.position;
+        oldPos = transform.position;
         return speed;
     }
 
+    public float Score()
+    {
+        float score = (100f * timesTargetAchieved) + (100f - minDistanceToTarget);
+        //Debug.Log("Id:" + identification + "Distance to obj: " + DistanceToObjective() + "Min distance: " + minDistanceToTarget + "Score: " + score);
+        return score;
+    }
+
+    /// <summary>
+    /// Script to compare the scores of two ships, used for sorting the list of fitness
+    /// </summary>
+    /// <param name="other">Ship to compare to.</param>
+    /// <returns></returns>
     public int CompareTo(Ship other)
     {
-        return DistanceToObjective().CompareTo(other.DistanceToObjective());
+        //Compare the score
+        return Score().CompareTo(other.Score());
+    }
+
+    /// <summary>
+    /// Update the color of the ship depending on the score. Using the range of a gradient.
+    /// </summary>
+    /// <param name="input">Either Score or distance to target</param>
+    private void UpdateColor(float input)
+    {
+        float gradientPosition = Mathf.InverseLerp(0, 25, input);
+        rederer.material.color = gradient.Evaluate(gradientPosition);
     }
 }
