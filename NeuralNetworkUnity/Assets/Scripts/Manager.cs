@@ -11,6 +11,7 @@ public class Manager : MonoBehaviour
     
     private int CurrentGen = 0;
     public int TimesObjectivesAchieved = 0;
+    public int Location = 0;
 
     public float SimulationTime = 15.0f;
     private float ActionTime = 15.0f;
@@ -30,7 +31,8 @@ public class Manager : MonoBehaviour
 
     private void CreateTarget()
     {
-        UnityEngine.Random.InitState(11081993+TimesObjectivesAchieved);
+        Location++;
+        UnityEngine.Random.InitState(11081993+Location);
         Vector3 position = new Vector3(RandomNumber(-5f, 5f, 5f), RandomNumber(-5f, 5f, 5f), RandomNumber(-5f, 5f, 5f));
         transform.position = position;
     }
@@ -77,7 +79,6 @@ public class Manager : MonoBehaviour
 
     void RecreateShips(List<Ship> ships)
     {
-        CreateTarget();
         List<GameObject> newGen = new List<GameObject>();
         
         //Foreach fittest ship
