@@ -26,7 +26,7 @@ public class Manager : MonoBehaviour
     void Start()
     {
         CreateShips();
-        uiController = GameObject.Find("Canvas").GetComponent<UiController>();
+        uiController = GameObject.Find("Selected_Info").GetComponent<UiController>();
     }
 
     private void CreateTarget()

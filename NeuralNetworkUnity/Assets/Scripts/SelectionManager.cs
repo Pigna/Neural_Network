@@ -5,10 +5,25 @@ using UnityEngine;
 public class SelectionManager : MonoBehaviour
 {
     [SerializeField] private Material defaultMaterial;
-    [SerializeField] private string selectableTag;
+    [SerializeField] private LayerMask clickableLayer;
     [SerializeField] private Material highlightMaterial;
 
     private Transform _selection;
+
+    private UiController _uiController;
+
+    void Awake()
+    {
+        _uiController = GameObject.Find("Selected_Info").GetComponent<UiController>();
+    }
+
+    private void Update()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            Select();
+        }
+    }
 
     void Select()
     {
@@ -21,19 +36,17 @@ public class SelectionManager : MonoBehaviour
 
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickableLayer))
         {
-            Debug.Log(hit);
             var selection = hit.transform;
-            //if(selection.CompareTag(selectableTag))
-            //{
             var selectionRenderer = selection.GetComponent<Renderer>();
             if (selectionRenderer != null)
             {
                 selectionRenderer.material = highlightMaterial;
             }
             _selection = selection;
-            //}
+            _uiController.ToggleInfoMenu(true);
+            _uiController.UpdateSelectedInfo(selection.gameObject);
         }
     }
 }

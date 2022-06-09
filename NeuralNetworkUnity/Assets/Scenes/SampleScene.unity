@@ -566,7 +566,7 @@ GameObject:
   - component: {fileID: 986791907}
   - component: {fileID: 986791911}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Selected_Info
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -672,6 +672,7 @@ MonoBehaviour:
   SelectedPanel: {fileID: 2129982639}
   SelectedNr: {fileID: 2051970375}
   CloseBtn: {fileID: 1106748900}
+  Neuron: {fileID: 8207404104015565595, guid: 471c733039f844a42b2603dc5de4bfe3, type: 3}
 --- !u!1 &1106748898
 GameObject:
   m_ObjectHideFlags: 0
@@ -923,7 +924,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultMaterial: {fileID: 0}
-  selectableTag: 
+  clickableLayer:
+    serializedVersion: 2
+    m_Bits: 8
   highlightMaterial: {fileID: 0}
 --- !u!1 &1733723085
 GameObject:

@@ -98,9 +98,9 @@ GameObject:
   - component: {fileID: 7274784234506235463}
   - component: {fileID: -4861910534549138858}
   - component: {fileID: -2557377382646076242}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BodyCube
-  m_TagString: Untagged
+  m_TagString: Selectable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

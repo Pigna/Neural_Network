@@ -112,16 +112,20 @@ public class NeuralNetwork
             neurons[0][i] = inputs[i];
         }
         //Iterate over the neurons and compute feedforward
+        //Layers
         for (int i = 1; i < layers.Length; i++)
         {
+            //Neurons for each layer
             for (int j = 0; j < neurons[i].Length; j++)
             {
                 float value = 0.25f;
 
+                //Connections
                 for (int k = 0; k < neurons[i - 1].Length; k++)
                 {
                     value += weights[i - 1][j][k] * neurons[i - 1][k];
                 }
+                //Set the neuron value
                 neurons[i][j] = (float)Math.Tanh(value);
             }
         }
@@ -171,5 +175,19 @@ public class NeuralNetwork
                 }
             }
         }
+    }
+    public int[] getLayers()
+    {
+        return layers;
+    }
+
+    public float[][] getNeurons()
+    {
+        return neurons;
+    }
+
+    public float[][][] getWeights()
+    {
+        return weights;
     }
 }
