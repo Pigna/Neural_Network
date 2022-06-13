@@ -55,16 +55,6 @@ public class Ship : MonoBehaviour, IComparable<Ship>
         //Get current movement speed
         float speed = Speed();
 
-        if (identification == 1)
-        {
-/*            Debug.Log(identification + " -> " +
-                "Dist: " + dist +
-                "Dir:" + dir.x + " " + dir.y + " " + dir.z +
-                "pos:" + transform.position +
-                "Speed:" + speed
-                 );*/
-        }
-
         //List the Input
         float[] input = new float[] {
             dist,
@@ -75,16 +65,6 @@ public class Ship : MonoBehaviour, IComparable<Ship>
 
         //Call neural network with input
         float[] networkReturn = neuralNetwork.FeedForward(input);//Input
-
-        if (identification == 1)
-        {
-/*            Debug.Log(identification + " Out -> " +
-            "Move: " + networkReturn[0] +
-            "X:" + networkReturn[1] +
-            "Y:" + networkReturn[2] +
-            "Z:" + networkReturn[3]
-            );*/
-        }
 
         //Use network output for actions
         Move(networkReturn[0]);
@@ -184,7 +164,7 @@ public class Ship : MonoBehaviour, IComparable<Ship>
     public float Score()
     {
         float score = (100f * timesTargetAchieved) + (100f - minDistanceToTarget);
-        //Debug.Log("Id:" + identification + "Distance to obj: " + DistanceToObjective() + "Min distance: " + minDistanceToTarget + "Score: " + score);
+        Debug.Log("Id:" + identification + "Distance to obj: " + DistanceToObjective() + "Min distance: " + minDistanceToTarget + "Score: " + score);
         return score;
     }
 

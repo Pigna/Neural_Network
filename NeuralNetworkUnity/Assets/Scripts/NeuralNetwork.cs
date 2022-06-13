@@ -90,7 +90,6 @@ public class NeuralNetwork
                 for (int k = 0; k < neuronsInPreviousLayer; k++)
                 {
                     neuronWeights[k] = (float) new Random().NextDouble() * (0.5f - -0.5f) + -0.5f;
-                    //UnityEngine.Random.Range(-0.5f, 0.5f);
                 }
                 layerWeightList.Add(neuronWeights);
             }
